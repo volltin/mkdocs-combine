@@ -3,6 +3,7 @@ import mkdocs_pandoc.filters.math
 import mkdocs_pandoc.filters.chapterhead
 import mkdocs_pandoc.filters.headlevels
 import mkdocs_pandoc.filters.images
+import mkdocs_pandoc.filters.metadata
 import mkdocs_pandoc.filters.exclude
 import mkdocs_pandoc.filters.include
 import mkdocs_pandoc.filters.tables
@@ -27,6 +28,7 @@ class PandocConverter:
         self.filter_xrefs = kwargs.get('filter_xrefs', True)
         self.image_ext = kwargs.get('image_ext', None)
         self.strip_anchors = kwargs.get('strip_anchors', True)
+        self.strip_metadata = kwargs.get('strip_metadata', True)
         self.convert_math = kwargs.get('convert_math', True)
         self.width = kwargs.get('width', 100)
 
@@ -151,6 +153,10 @@ class PandocConverter:
         # Convert math expressions
         if self.convert_math:
             lines = mkdocs_pandoc.filters.math.MathFilter().run(lines)
+
+        # Ignore metadata
+        if self.strip_metadata:
+            lines = mkdocs_pandoc.filters.metadata.MetadataFilter().run(lines)
 
         # Fix cross references
         if self.filter_xrefs:
