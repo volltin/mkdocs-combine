@@ -22,6 +22,6 @@ class MathFilter(object):
         """Filter method"""
         ret = []
         for line in lines:
-            ret.append(re.sub(r'\\\((*?)\\\)', r'$\1$', line))
+            ret.append(re.sub(r'\\\((.*)\\\)', r'$\1$', line))
 
         return ret
