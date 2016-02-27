@@ -150,7 +150,7 @@ class PandocConverter:
 
         # Convert math expressions
         if self.convert_math:
-            lines = mkdocs_pandoc.filters.anchors.MathFilter().run(lines)
+            lines = mkdocs_pandoc.filters.math.MathFilter().run(lines)
 
         # Fix cross references
         if self.filter_xrefs:
