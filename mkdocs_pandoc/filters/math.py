@@ -1,4 +1,5 @@
 # Copyright 2015 Johannes Grassler <johannes@btw23.de>
+# Copyright 2016 Kergonath <kergonath@me.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

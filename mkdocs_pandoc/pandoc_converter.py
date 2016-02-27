@@ -137,7 +137,8 @@ class PandocConverter:
 
             if self.filter_include:
                 lines_tmp = f_include.run(lines_tmp)
-
+                
+            lines_tmp = mkdocs_pandoc.filters.metadata.MetadataFilter().run(lines_tmp)
             lines_tmp = f_headlevel.run(lines_tmp)
             lines_tmp = f_chapterhead.run(lines_tmp)
             lines_tmp = f_image.run(lines_tmp)
@@ -153,10 +154,6 @@ class PandocConverter:
         # Convert math expressions
         if self.convert_math:
             lines = mkdocs_pandoc.filters.math.MathFilter().run(lines)
-
-        # Ignore metadata
-        if self.strip_metadata:
-            lines = mkdocs_pandoc.filters.metadata.MetadataFilter().run(lines)
 
         # Fix cross references
         if self.filter_xrefs:
