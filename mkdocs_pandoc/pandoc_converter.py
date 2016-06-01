@@ -86,6 +86,14 @@ class PandocConverter:
                                 'level': level,
                              })
                 if type(list(page.values())[0]) is list:
+                    # Add the parent section
+                    flattened.append(
+                            {
+                                'file': None,
+                                'title': list(page.keys())[0],
+                                'level': level,
+                            })
+                    # Add children sections
                     flattened.extend(
                             self.flatten_pages(
                                 list(page.values())[0],
@@ -115,12 +123,17 @@ class PandocConverter:
         f_headlevel = mkdocs_pandoc.filters.headlevels.HeadlevelFilter(pages)
 
         for page in pages:
-            fname = os.path.join(self.config['docs_dir'], page['file'])
-            try:
-                p = codecs.open(fname, 'r', self.encoding)
-            except IOError as e:
-                raise FatalError("Couldn't open %s for reading: %s" % (fname,
-                    e.strerror), 1)
+            lines_tmp = []
+            if page['file']:
+                fname = os.path.join(self.config['docs_dir'], page['file'])
+                try:
+                    with codecs.open(fname, 'r', self.encoding) as p:
+                        for line in p.readlines():
+                            lines_tmp.append(line.rstrip())
+                except IOError as e:
+                    raise FatalError("Couldn't open %s for reading: %s" % (fname,
+                        e.strerror), 1)
+
             f_chapterhead = mkdocs_pandoc.filters.chapterhead.ChapterheadFilter(
                     headlevel=page['level'],
                     title=page['title']
@@ -130,11 +143,6 @@ class PandocConverter:
                     filename=page['file'],
                     image_path=self.config['site_dir'],
                     image_ext=self.image_ext)
-
-            lines_tmp = []
-
-            for line in p.readlines():
-                lines_tmp.append(line.rstrip())
 
             if self.exclude:
                 lines_tmp = f_exclude.run(lines_tmp)
