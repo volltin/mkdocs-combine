@@ -74,7 +74,7 @@ class PandocConverter:
                 flattened.append(
                              {
                                 'file': page[0],
-                                'title': page[1],
+                                'title': '%s {.unnumbered}' % page[1],
                                 'level': level,
                              })
             if type(page) is dict:
@@ -82,7 +82,7 @@ class PandocConverter:
                     flattened.append(
                             {
                                 'file': list(page.values())[0],
-                                'title': list(page.keys())[0],
+                                'title': '%s {.unnumbered}' % list(page.keys())[0],
                                 'level': level,
                              })
                 if type(list(page.values())[0]) is list:
@@ -90,7 +90,7 @@ class PandocConverter:
                     flattened.append(
                             {
                                 'file': None,
-                                'title': list(page.keys())[0],
+                                'title': '%s {.unnumbered}' % list(page.keys())[0],
                                 'level': level,
                             })
                     # Add children sections
