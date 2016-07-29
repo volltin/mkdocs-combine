@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 import re
 
 # TODO: Implement handling for Setext style headers.
@@ -26,7 +25,7 @@ class HeadlevelFilter(object):
         # Determine maximum header level from nesting in  mkdocs.yml
         for page in pages:
             if page['level'] > max_offset:
-                max_offset = page['level']
+                max_offset = page['level'] - 1
 
         self.offset = max_offset
 
@@ -35,6 +34,6 @@ class HeadlevelFilter(object):
         """Filter method"""
         ret = []
         for line in lines:
-            ret.append(re.sub(r'^#', '#' + ('#' * self.offset), line))
+            ret.append(re.sub(r'^#', ('#' * self.offset), line))
 
         return ret

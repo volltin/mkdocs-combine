@@ -50,6 +50,8 @@ def main():
     opts.add_argument('-o', '--outfile', default=None,
             help="File to write finished pandoc document to (default: STDOUT)")
 
+    opts.add_argument('-v', '--version', action='version', version='%(prog)s 0.2.7')
+
     args = opts.parse_args()
 
     # Python 2 and Python 3 have mutually incompatible approaches to writing
