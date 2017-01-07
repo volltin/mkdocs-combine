@@ -1,3 +1,7 @@
+0.2.7:
+
+ * Added support for pages without titles specified in mkdocs.yml
+
 0.2.6:
 
  * Fixed issues/11 (added support for underwide header rows in tables)

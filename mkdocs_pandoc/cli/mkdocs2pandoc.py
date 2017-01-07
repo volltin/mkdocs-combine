@@ -29,14 +29,14 @@ import mkdocs_pandoc
 
 def main():
     opts = argparse.ArgumentParser(
-            description="mdtableconv.py " +
-            "- converts pipe delimited tables to Pandoc's grid tables")
+            description="mkdocs2pandoc.py " +
+            "- flattens an MkDocs source site into a single Markdown document")
 
     opts.add_argument('-e', '--encoding', default='utf-8',
             help="Set encoding for input files (default: utf-8)")
 
     opts.add_argument('-f', '--config-file', default='mkdocs.yml',
-            help="mkdocs configuration file to use")
+            help="MkDocs configuration file to use")
 
     opts.add_argument('-i', '--image-ext', default=None,
             help="Extension to substitute image extensions by (default: no replacement)")
