@@ -9,6 +9,7 @@ import mkdocs_pandoc.filters.include
 import mkdocs_pandoc.filters.tables
 import mkdocs_pandoc.filters.toc
 import mkdocs_pandoc.filters.xref
+import mkdocs.utils
 
 from mkdocs_pandoc.exceptions import FatalError
 
@@ -74,6 +75,13 @@ class PandocConverter:
         flattened = []
 
         for page in pages:
+            if type(page) is str:
+                flattened.append(
+                    {
+                        'file' : page,
+                        'title': mkdocs.utils.filename_to_title(page),
+                        'level': level,
+                    })
             if type(page) is list:
                 flattened.append(
                              {
