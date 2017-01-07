@@ -1,7 +1,9 @@
 import mkdocs_pandoc.filters.anchors
+import mkdocs_pandoc.filters.math
 import mkdocs_pandoc.filters.chapterhead
 import mkdocs_pandoc.filters.headlevels
 import mkdocs_pandoc.filters.images
+import mkdocs_pandoc.filters.metadata
 import mkdocs_pandoc.filters.exclude
 import mkdocs_pandoc.filters.include
 import mkdocs_pandoc.filters.tables
@@ -27,6 +29,8 @@ class PandocConverter:
         self.filter_xrefs = kwargs.get('filter_xrefs', True)
         self.image_ext = kwargs.get('image_ext', None)
         self.strip_anchors = kwargs.get('strip_anchors', True)
+        self.strip_metadata = kwargs.get('strip_metadata', True)
+        self.convert_math = kwargs.get('convert_math', True)
         self.width = kwargs.get('width', 100)
 
         try:
@@ -82,7 +86,7 @@ class PandocConverter:
                 flattened.append(
                              {
                                 'file': page[0],
-                                'title': page[1],
+                                'title': '%s {.unnumbered}' % page[1],
                                 'level': level,
                              })
             if type(page) is dict:
@@ -90,10 +94,18 @@ class PandocConverter:
                     flattened.append(
                             {
                                 'file': list(page.values())[0],
-                                'title': list(page.keys())[0],
+                                'title': '%s {.unnumbered}' % list(page.keys())[0],
                                 'level': level,
                              })
                 if type(list(page.values())[0]) is list:
+                    # Add the parent section
+                    flattened.append(
+                            {
+                                'file': None,
+                                'title': '%s {.unnumbered}' % list(page.keys())[0],
+                                'level': level,
+                            })
+                    # Add children sections
                     flattened.extend(
                             self.flatten_pages(
                                 list(page.values())[0],
@@ -123,12 +135,17 @@ class PandocConverter:
         f_headlevel = mkdocs_pandoc.filters.headlevels.HeadlevelFilter(pages)
 
         for page in pages:
-            fname = os.path.join(self.config['docs_dir'], page['file'])
-            try:
-                p = codecs.open(fname, 'r', self.encoding)
-            except IOError as e:
-                raise FatalError("Couldn't open %s for reading: %s" % (fname,
-                    e.strerror), 1)
+            lines_tmp = []
+            if page['file']:
+                fname = os.path.join(self.config['docs_dir'], page['file'])
+                try:
+                    with codecs.open(fname, 'r', self.encoding) as p:
+                        for line in p.readlines():
+                            lines_tmp.append(line.rstrip())
+                except IOError as e:
+                    raise FatalError("Couldn't open %s for reading: %s" % (fname,
+                        e.strerror), 1)
+
             f_chapterhead = mkdocs_pandoc.filters.chapterhead.ChapterheadFilter(
                     headlevel=page['level'],
                     title=page['title']
@@ -139,17 +156,13 @@ class PandocConverter:
                     image_path=self.config['site_dir'],
                     image_ext=self.image_ext)
 
-            lines_tmp = []
-
-            for line in p.readlines():
-                lines_tmp.append(line.rstrip())
-
             if self.exclude:
                 lines_tmp = f_exclude.run(lines_tmp)
 
             if self.filter_include:
                 lines_tmp = f_include.run(lines_tmp)
-
+                
+            lines_tmp = mkdocs_pandoc.filters.metadata.MetadataFilter().run(lines_tmp)
             lines_tmp = f_headlevel.run(lines_tmp)
             lines_tmp = f_chapterhead.run(lines_tmp)
             lines_tmp = f_image.run(lines_tmp)
@@ -161,6 +174,10 @@ class PandocConverter:
         # Strip anchor tags
         if self.strip_anchors:
             lines = mkdocs_pandoc.filters.anchors.AnchorFilter().run(lines)
+
+        # Convert math expressions
+        if self.convert_math:
+            lines = mkdocs_pandoc.filters.math.MathFilter().run(lines)
 
         # Fix cross references
         if self.filter_xrefs:

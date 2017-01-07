@@ -1,4 +1,5 @@
 # Copyright 2015 Johannes Grassler <johannes@btw23.de>
+# Copyright 2016 Kergonath <kergonath@me.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,28 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 import re
 
-# TODO: Implement handling for Setext style headers.
-
-class HeadlevelFilter(object):
-    """Filter for increasing Markdown header levels (only Atx style)"""
-
-    def __init__(self, pages):
-        max_offset = 0
-
-        # Determine maximum header level from nesting in  mkdocs.yml
-        for page in pages:
-            if page['level'] > max_offset:
-                max_offset = page['level'] - 1
-
-        self.offset = max_offset
-
+class MathFilter(object):
+    """Turn the \( \) Markdown math notation into LaTex $$ inlines"""
 
     def run(self, lines):
         """Filter method"""
         ret = []
         for line in lines:
-            ret.append(re.sub(r'^#', ('#' * self.offset), line))
+            ret.append(re.sub(r'\\\((.*)\\\)', r'$\1$', line))
 
         return ret
