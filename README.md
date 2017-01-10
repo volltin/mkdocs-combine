@@ -1,6 +1,6 @@
 # mkdocs-combine
 
-**`mkdocs-combine`** is a Python module that combines a [MkDocs](http://www.mkdocs.org/)-style Markdown source site into a single Markdown document. This is useful for
+[**`mkdocs-combine`**](https://github.com/twardoch/mkdocs-combine/) is a Python module that combines a [MkDocs](http://www.mkdocs.org/)-style Markdown source site into a single Markdown document. This is useful for
 
 * Generating PDF or EPUB from your MkDocs documentation
 * Generating single-page HTML from your MkDocs documentation
@@ -10,7 +10,7 @@ The output Markdown document is compatible with [pandoc](http://www.pandoc.org/)
 
 This package is written in Python 2.7 and relies on `mkdocs` and the Python `Markdown` implementation. Aside from several filters, the module contains a `MkDocsCombiner` class tying them together into a coherent whole, and the command-line tool `mkdocscombine`. 
 
-`mkdocs-combine` is maintained by Adam Twardoch. It's a fork of [`mkdocs-pandoc`](https://github.com/jgrassler/mkdocs-pandoc) by Johannes Grassler. 
+[`mkdocs-combine`](https://github.com/twardoch/mkdocs-combine/) is maintained by Adam Twardoch. It's a fork of [`mkdocs-pandoc`](https://github.com/jgrassler/mkdocs-pandoc) by Johannes Grassler. 
 
 # Installation
 
