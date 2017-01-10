@@ -1,4 +1,5 @@
 # Copyright 2015 Johannes Grassler <johannes@btw23.de>
+# Copyright 2017 Adam Twardoch <adam+github@twardoch.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,10 +23,10 @@ class HeadlevelFilter(object):
     def __init__(self, pages):
         max_offset = 0
 
-        # Determine maximum header level from nesting in  mkdocs.yml
+        # Determine maximum header level from nesting in mkdocs.yml
         for page in pages:
             if page['level'] > max_offset:
-                max_offset = page['level'] - 1
+                max_offset = page['level']
 
         self.offset = max_offset
 
@@ -34,6 +35,8 @@ class HeadlevelFilter(object):
         """Filter method"""
         ret = []
         for line in lines:
-            ret.append(re.sub(r'^#', ('#' * self.offset), line))
+            line = re.sub(r'^#', '#' * self.offset, line)
+            line = re.sub(r'^#######+', '######', line)
+            ret.append(line)
 
         return ret

@@ -81,6 +81,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['mkdocs>=0.16.1',
+                      'Markdown>=2.6.7',
                       'markdown-include>=0.5.1'
                       ],
 

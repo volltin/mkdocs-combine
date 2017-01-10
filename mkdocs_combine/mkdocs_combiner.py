@@ -1,21 +1,37 @@
+# Copyright 2015 Johannes Grassler <johannes@btw23.de>
+# Copyright 2017 Adam Twardoch <adam+github@twardoch.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+import codecs
+import os
+
+import markdown
+import mkdocs.config
+import mkdocs.utils
+
 import mkdocs_combine.filters.anchors
-import mkdocs_combine.filters.math
 import mkdocs_combine.filters.chapterhead
+import mkdocs_combine.filters.exclude
 import mkdocs_combine.filters.headlevels
 import mkdocs_combine.filters.images
-import mkdocs_combine.filters.metadata
-import mkdocs_combine.filters.exclude
 import mkdocs_combine.filters.include
+import mkdocs_combine.filters.math
+import mkdocs_combine.filters.metadata
 import mkdocs_combine.filters.tables
 import mkdocs_combine.filters.toc
 import mkdocs_combine.filters.xref
-import mkdocs.utils
-
 from mkdocs_combine.exceptions import FatalError
-
-import codecs
-import os
-import yaml
 
 
 class MkDocsCombiner:
@@ -33,20 +49,24 @@ class MkDocsCombiner:
         self.convert_math = kwargs.get('convert_math', True)
         self.width = kwargs.get('width', 100)
         self.add_chapter_heads = kwargs.get('add_chapter_heads', True)
+        self.increase_heads = kwargs.get('increase_heads', True)
+        self.combined_md_lines = []
+        self.html_bare = u''
+        self.html = u''
 
         try:
             cfg = codecs.open(self.config_file, 'r', self.encoding)
         except IOError as e:
             raise FatalError("Couldn't open %s for reading: %s" % (self.config_file,
-                e.strerror), 1)
+                                                                   e.strerror), 1)
 
-        self.config = yaml.load(cfg)
+        self.config = mkdocs.config.load_config(config_file=self.config_file)
 
-        if not 'docs_dir' in self.config:
-            self.config['docs_dir'] = 'docs'
+        if not u'docs_dir' in self.config:
+            self.config[u'docs_dir'] = u'docs'
 
-        if not 'site_dir' in  self.config:
-            self.config['site_dir'] = 'site'
+        if not u'site_dir' in self.config:
+            self.config[u'site_dir'] = u'site'
 
         # Set filters depending on markdown extensions from config
         # Defaults first...
@@ -55,19 +75,19 @@ class MkDocsCombiner:
 
         # ...then override defaults based on config, if any:
 
-        if 'markdown_extensions' in self.config:
-          for ext in self.config['markdown_extensions']:
-              extname = ''
-              # extension entries may be dicts (for passing extension parameters)
-              if type(ext) is dict:
-                  extname = list(ext.keys())[0]
-              if type(ext) is str:
-                  extname = ext
+        if u'markdown_extensions' in self.config:
+            for ext in self.config[u'markdown_extensions']:
+                extname = u''
+                # extension entries may be dicts (for passing extension parameters)
+                if type(ext) is dict:
+                    extname = list(ext.keys())[0].split(u'(')[0]
+                if type(ext) is str or type(ext) is unicode:
+                    extname = ext
 
-              if extname == 'markdown_include.include':
-                  self.filter_include = True
-              if extname == 'toc':
-                  self.filter_toc = True
+                if extname == u'markdown_include.include':
+                    self.filter_include = True
+                if extname == u'toc':
+                    self.filter_toc = True
 
         cfg.close()
 
@@ -76,59 +96,58 @@ class MkDocsCombiner:
         flattened = []
 
         for page in pages:
-            if type(page) is str:
+            if type(page) in (str, unicode):
                 flattened.append(
                     {
-                        'file' : page,
-                        'title': mkdocs.utils.filename_to_title(page),
-                        'level': level,
+                        u'file' : page,
+                        u'title': u'%s {: .page-title}' % mkdocs.utils.filename_to_title(page),
+                        u'level': level,
                     })
             if type(page) is list:
                 flattened.append(
-                             {
-                                'file': page[0],
-                                'title': '%s {.unnumbered}' % page[1],
-                                'level': level,
-                             })
+                    {
+                        u'file' : page[0],
+                        u'title': u'%s {: .page-title}' % page[1],
+                        u'level': level,
+                    })
             if type(page) is dict:
-                if type(list(page.values())[0]) is str:
+                if type(list(page.values())[0]) in (str, unicode):
                     flattened.append(
-                            {
-                                'file': list(page.values())[0],
-                                'title': '%s {.unnumbered}' % list(page.keys())[0],
-                                'level': level,
-                             })
+                        {
+                            u'file' : list(page.values())[0],
+                            u'title': u'%s {: .page-title}' % list(page.keys())[0],
+                            u'level': level,
+                        })
                 if type(list(page.values())[0]) is list:
                     # Add the parent section
                     flattened.append(
-                            {
-                                'file': None,
-                                'title': '%s {.unnumbered}' % list(page.keys())[0],
-                                'level': level,
-                            })
+                        {
+                            u'file' : None,
+                            u'title': u'%s {: .page-title}' % list(page.keys())[0],
+                            u'level': level,
+                        })
                     # Add children sections
                     flattened.extend(
-                            self.flatten_pages(
-                                list(page.values())[0],
-                                level + 1)
-                            )
-
+                        self.flatten_pages(
+                            list(page.values())[0],
+                            level + 1)
+                    )
 
         return flattened
 
-    def convert(self):
+    def combine(self):
         """User-facing conversion method. Returns combined document as a list of
         lines."""
         lines = []
 
-        pages = self.flatten_pages(self.config['pages'])
+        pages = self.flatten_pages(self.config[u'pages'])
 
         f_exclude = mkdocs_combine.filters.exclude.ExcludeFilter(
-                exclude=self.exclude)
+            exclude=self.exclude)
 
         f_include = mkdocs_combine.filters.include.IncludeFilter(
-                base_path=self.config['docs_dir'],
-                encoding=self.encoding)
+            base_path=self.config[u'docs_dir'],
+            encoding=self.encoding)
 
         # First, do the processing that must be done on a per-file basis:
         # Adjust header levels, insert chapter headings and adjust image paths.
@@ -137,34 +156,35 @@ class MkDocsCombiner:
 
         for page in pages:
             lines_tmp = []
-            if page['file']:
-                fname = os.path.join(self.config['docs_dir'], page['file'])
+            if page[u'file']:
+                fname = os.path.join(self.config[u'docs_dir'], page[u'file'])
                 try:
                     with codecs.open(fname, 'r', self.encoding) as p:
                         for line in p.readlines():
                             lines_tmp.append(line.rstrip())
                 except IOError as e:
                     raise FatalError("Couldn't open %s for reading: %s" % (fname,
-                        e.strerror), 1)
+                                                                           e.strerror), 1)
 
             f_chapterhead = mkdocs_combine.filters.chapterhead.ChapterheadFilter(
-                    headlevel=page['level'],
-                    title=page['title']
-                    )
+                headlevel=page[u'level'],
+                title=page[u'title']
+            )
 
             f_image = mkdocs_combine.filters.images.ImageFilter(
-                    filename=page['file'],
-                    image_path=self.config['site_dir'],
-                    image_ext=self.image_ext)
+                filename=page[u'file'],
+                image_path=self.config[u'site_dir'],
+                image_ext=self.image_ext)
 
             if self.exclude:
                 lines_tmp = f_exclude.run(lines_tmp)
 
             if self.filter_include:
                 lines_tmp = f_include.run(lines_tmp)
-                
+
             lines_tmp = mkdocs_combine.filters.metadata.MetadataFilter().run(lines_tmp)
-            lines_tmp = f_headlevel.run(lines_tmp)
+            if self.increase_heads:
+                lines_tmp = f_headlevel.run(lines_tmp)
             if self.add_chapter_heads:
                 lines_tmp = f_chapterhead.run(lines_tmp)
             lines_tmp = f_image.run(lines_tmp)
@@ -191,4 +211,33 @@ class MkDocsCombiner:
         if self.filter_tables:
             lines = mkdocs_combine.filters.tables.TableFilter().run(lines)
 
-        return(lines)
+        self.combined_md_lines = lines
+        return (self.combined_md_lines)
+
+    def to_html(self):
+        md = u"\n".join(self.combined_md_lines)
+        mkdocs_extensions = self.config.get(u'markdown_extensions', [])
+        extensions = ['markdown.extensions.attr_list']
+        extension_configs = self.config.get(u'mdx_configs', [])
+        for ext in mkdocs_extensions:
+            if type(ext) is str or type(ext) is unicode:
+                extname = str(ext)
+                extensions.append(extname)
+            elif type(ext) is dict:
+                extname = str(ext.keys()[0])
+                extensions.append(extname)
+                extension_configs[extname] = ext[extname]
+        self.html_bare = markdown.markdown(md, extensions=extensions,
+                                           extension_configs=extension_configs,
+                                           output_format='html5')
+        self.html = u"""<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        </head>
+        <body>
+        {}
+        </body>
+        </html>
+        """.format(self.html_bare)
+        return (self.html)

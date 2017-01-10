@@ -1,21 +1,21 @@
-# DESCRIPTION
+# Description
 
-This module contains a set of filters for converting
-[mkdocs](http://www.mkdocs.org) style markdown documentation into a single
-[pandoc(1)](http://www.pandoc.org) flavoured markdown document. This is useful
+This module combines a
+[MkDocs](http://www.mkdocs.org)-style Markdown source site into a single Markdown document, which can optionally be
+[pandoc](http://www.pandoc.org)-flavoured. This is useful
 for
 
-* Generating PDF or EPUB from your mkdocs documentation
-* Generating single-page HTML from your mkdocs documentation
-* Converting your mkdocs documentation to other formats, such as asciidoc.
+* Generating PDF or EPUB from your MkDocs documentation
+* Generating single-page HTML from your MkDocs documentation
+* Converting your MkDocs documentation to other formats, such as asciidoc.
 
 Aside from the filters the module contains a converter class tying them
-together into a coherent whole and the command line converter `mkdocs2pandoc`.
+together into a coherent whole, and the command line converter `mkdocscombine`.
 
-# PREREQUISITES
+# Prerequisites
 
-For generating PDF through pandoc(1) you will need to install a few things
-pip(1) won't handle, namely pandoc and the somewhat exotic LaTeX packages its
+For generating PDF through pandoc you will need to install a few things
+pip won't handle, namely pandoc and the somewhat exotic LaTeX packages its
 default LaTeX template uses. On a Ubuntu 14.04 system this amounts to the
 following packages:
 
@@ -39,22 +39,14 @@ choco install python
 choco install pandocpdf
 ```
 
-# INSTALLATION
+# Installation
 
 _Note: The following instructions apply to both Unixoid systems and Windows._
 
-Make sure, you have [pip](https://pip.pypa.io/en/stable/) installed, then issue
-the following command:
+If you'd like to use the development version, use
 
 ```
-pip install mkdocs-pandoc
-```
-
-This will install the stable version. If you'd like to use the development
-version, use
-
-```
-pip install git+https://github.com/jgrassler/mkdocs-pandoc
+pip install git+https://github.com/twardoch/mkdocs-combine
 ```
 
 instead. Note that if you are behind a proxy, you might need to add the `--proxy` option like this
@@ -63,10 +55,10 @@ instead. Note that if you are behind a proxy, you might need to add the `--proxy
 pip --proxy=http[s]://user@mydomain:port install ...
 ```
 
-# USAGE
+# Usage
 
 When executed in the directory where your documentation's `mkdoc.yml` and the
-`docs/` directory containing the actual documentation resides, `mkdocs2pandoc`
+`docs/` directory containing the actual documentation resides, `mkdocscombine`
 should print one long Markdown document suitable for `pandoc(1)` on standard
 output. This works under the following assumptions:
 
@@ -74,16 +66,17 @@ output. This works under the following assumptions:
 
 ```
 cd ~/mydocs
-mkdocs2pandoc > mydocs.pd
+mkdocscombine -o mydocs.pd
 pandoc --toc -f markdown+grid_tables+table_captions -o mydocs.pdf mydocs.pd   # Generate PDF
 pandoc --toc -f markdown+grid_tables -t epub -o mydocs.epub mydocs.pd         # Generate EPUB
 ```
 
-# BUGS
+# Bugs
 
 The following things are known to be broken:
 
-* `mdtableconv.py`: Line wrapping in table cells will wrap links, which causes
+Line wrapping in table cells will wrap links, which causes
+Line wrapping in table cells will wrap links, which causes
   whitespace to be inserted in their target URLs, at least in PDF output. While
   this is a bit of a Pandoc problem, it can and should be fixed in this module.
 
@@ -91,9 +84,10 @@ The following things are known to be broken:
   between markdown documents will be reduced to their link titles, i.e. they
   will not be links in the resulting Pandoc document.
 
-# COPYRIGHT
+# Copyright
 
 (C) 2015 Johannes Grassler <johannes@btw23.de>
+(C) 2017 Adam Twardoch <adam+github@twardoch.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
