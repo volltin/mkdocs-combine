@@ -27,6 +27,7 @@ from mkdocs_combine.exceptions import FatalError
 
 __version__ = '0.3.0.0'
 
+
 def main():
     opts = argparse.ArgumentParser(
         description="mkdocscombine.py " +
@@ -52,20 +53,20 @@ def main():
     opts_strip_metadata.add_argument('-m', '--meta', dest='strip_metadata', action='store_false',
                                      help='Keep YAML metadata (default)')
     opts_strip_metadata.add_argument('-M', '--no-meta', dest='strip_metadata', action='store_true',
-                                     help='Strip YAML metadata'))
+                                     help='Strip YAML metadata')
     opts.set_defaults(strip_metadata=False)
 
     opts_add_chapter_heads = opts_meta.add_mutually_exclusive_group(required=False)
     opts_add_chapter_heads.add_argument('-t', '--titles', dest='add_chapter_heads', action='store_true',
-                                    help = 'Add chapter titles from mkdocs.yml to chapter files (default)')
+                                        help='Add chapter titles from mkdocs.yml to chapter files (default)')
     opts_add_chapter_heads.add_argument('-T', '--no-titles', dest='add_chapter_heads', action='store_false',
-                                    help = 'Do not add chapter titles'))
+                                        help='Do not add chapter titles')
     opts.set_defaults(add_chapter_heads=True)
 
     opts_tables = opts.add_argument_group('Tables')
     opts_filter_tables = opts_tables.add_mutually_exclusive_group(required=False)
     opts_filter_tables.add_argument('-g', '--grid-tables', dest='filter_tables', action='store_true',
-                                    help='Convert Markdown tables to Pandoc-style grid tables'))
+                                    help='Convert Markdown tables to Pandoc-style grid tables')
     opts_filter_tables.add_argument('-G', '--orig-tables', dest='filter_tables', action='store_false',
                                     help='Keep original Markdown tables')
     opts.set_defaults(filter_tables=False)
@@ -76,7 +77,7 @@ def main():
     opts_links = opts.add_argument_group('Links')
     opts_filter_xrefs = opts_links.add_mutually_exclusive_group(required=False)
     opts_filter_xrefs.add_argument('-r', '--xrefs', dest='filter_xrefs', action='store_false',
-                                   help='Keep MkDocs-style cross-references'))
+                                   help='Keep MkDocs-style cross-references')
     opts_filter_xrefs.add_argument('-R', '--no-xrefs', dest='filter_xrefs', action='store_true',
                                    help='Replace MkDocs-style cross-references by just their title (default)')
     opts.set_defaults(filter_xrefs=True)
@@ -93,7 +94,7 @@ def main():
     opts_convert_math.add_argument('--convert-math', dest='convert_math', action='store_true',
                                    help='Turn the \( \) Markdown math notation into LaTex $$ inlines')
     opts_convert_math.add_argument('--no-convert-math', dest='convert_math', action='store_false',
-                                   help='Keep \( \) Markdown math notation (default)'))
+                                   help='Keep \( \) Markdown math notation (default)')
     opts.set_defaults(convert_math=False)
 
     opts_extras.add_argument('-i', '--image-ext', default=None,
@@ -109,30 +110,30 @@ def main():
     elif sys.version_info.major >= 3:
         out = open(sys.stdout.fileno(), mode='w', encoding=args.encoding, buffering=1)
 
-
-try:
-    pconv = mkdocs_combine.MkDocsCombiner(
-        config_file=args.config_file,
-        exclude=args.exclude,
-        image_ext=args.image_ext,
-        width=args.width,
-        encoding=args.encoding,
-        filter_tables=args.filter_tables,
-        filter_xrefs=args.filter_xrefs,
-        strip_anchors=args.strip_anchors,
-        strip_metadata=args.strip_metadata,
-        convert_math=args.convert_math,
-        add_chapter_heads=args.add_chapter_heads,
-    )
-except FatalError as e:
-    print(e.message, file=sys.stderr)
-    return (e.status)
-if args.outfile:
     try:
-        out = codecs.open(args.outfile, 'w', encoding=args.encoding)
-    except IOError as e:
-        print("Couldn't open %s for writing: %s" % (args.outfile, e.strerror), file=sys.stderr)
+        pconv = mkdocs_combine.MkDocsCombiner(
+            config_file=args.config_file,
+            exclude=args.exclude,
+            image_ext=args.image_ext,
+            width=args.width,
+            encoding=args.encoding,
+            filter_tables=args.filter_tables,
+            filter_xrefs=args.filter_xrefs,
+            strip_anchors=args.strip_anchors,
+            strip_metadata=args.strip_metadata,
+            convert_math=args.convert_math,
+            add_chapter_heads=args.add_chapter_heads,
+        )
+    except FatalError as e:
+        print(e.message, file=sys.stderr)
+        return (e.status)
+    out = None
+    if args.outfile:
+        try:
+            out = codecs.open(args.outfile, 'w', encoding=args.encoding)
+        except IOError as e:
+            print("Couldn't open %s for writing: %s" % (args.outfile, e.strerror), file=sys.stderr)
 
-for line in pconv.convert():
-    out.write(line + '\n')
-out.close()
+    for line in pconv.convert():
+        out.write(line + '\n')
+    out.close()
