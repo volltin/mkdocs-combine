@@ -1,8 +1,7 @@
 # Description
 
 This module combines a
-[MkDocs](http://www.mkdocs.org)-style Markdown source site into a single Markdown document, which can optionally be
-[pandoc](http://www.pandoc.org)-flavoured. This is useful
+[MkDocs](http://www.mkdocs.org)-style Markdown source site into a single Markdown document, which can optionally be [pandoc](http://www.pandoc.org)-flavoured. This is useful
 for
 
 * Generating PDF or EPUB from your MkDocs documentation
@@ -59,8 +58,61 @@ pip --proxy=http[s]://user@mydomain:port install ...
 
 When executed in the directory where your documentation's `mkdoc.yml` and the
 `docs/` directory containing the actual documentation resides, `mkdocscombine`
-should print one long Markdown document suitable for `pandoc(1)` on standard
-output. This works under the following assumptions:
+should print one long Markdown document suitable for `pandoc` on standard
+output.
+
+```sh
+usage: mkdocscombine [-h] [-V] [-o OUTFILE] [-f CONFIG_FILE] [-e ENCODING]
+                     [-x EXCLUDE] [-H OUTHTML] [-y | -Y] [-c | -C] [-u | -k]
+                     [-t | -g] [-G WIDTH] [-r | -R] [-a | -A] [-m | -l]
+                     [-i IMAGE_EXT]
+
+mkdocscombine.py - combines an MkDocs source site into a single Markdown
+document
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -V, --version         show program's version number and exit
+
+files:
+  -o OUTFILE, --outfile OUTFILE
+                        write combined Markdown to path ('-' for stdout)
+  -f CONFIG_FILE, --config-file CONFIG_FILE
+                        MkDocs config file (default: mkdocs.yml)
+  -e ENCODING, --encoding ENCODING
+                        set encoding for input files (default: utf-8)
+  -x EXCLUDE, --exclude EXCLUDE
+                        exclude Markdown files from processing (default: none)
+  -H OUTHTML, --outhtml OUTHTML
+                        write simple HTML to path ('-' for stdout)
+
+structure:
+  -y, --meta            keep YAML metadata (default)
+  -Y, --no-meta         strip YAML metadata
+  -c, --titles          add titles from mkdocs.yml to Markdown files (default)
+  -C, --no-titles       do not add titles to Markdown files
+  -u, --up-levels       increase ATX header levels in Markdown files (default)
+  -k, --keep-levels     do not increase ATX header levels in Markdown files
+
+tables:
+  -t, --tables          keep original Markdown tables (default)
+  -g, --grid-tables     combine Markdown tables to Pandoc-style grid tables
+  -G WIDTH, --grid-width WIDTH
+                        char width of converted grid tables (default: 100)
+
+links:
+  -r, --refs            keep MkDocs-style cross-references
+  -R, --no-refs         replace MkDocs-style cross-references by just their
+                        title (default)
+  -a, --anchors         keep HTML anchor tags
+  -A, --no-anchors      strip out HTML anchor tags (default)
+
+extras:
+  -m, --math            keep \( \) Markdown math notation as is (default)
+  -l, --latex           combine the \( \) Markdown math into LaTeX $$ inlines
+  -i IMAGE_EXT, --image-ext IMAGE_EXT
+                        replace image extensions by (default: no replacement)
+```
 
 ## Usage example
 
@@ -86,8 +138,8 @@ Line wrapping in table cells will wrap links, which causes
 
 # Copyright
 
-(C) 2015 Johannes Grassler <johannes@btw23.de>
-(C) 2017 Adam Twardoch <adam+github@twardoch.com>
+  * © 2015 Johannes Grassler <johannes@btw23.de>
+  * © 2017 Adam Twardoch <adam+github@twardoch.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

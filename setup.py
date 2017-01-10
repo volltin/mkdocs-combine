@@ -71,7 +71,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='mkdocs markdown pandoc',
+    keywords='mkdocs markdown pandoc print inline combine flatten',
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(),
