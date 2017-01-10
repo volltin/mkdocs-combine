@@ -1,3 +1,8 @@
+0.2.6.4 by Adam Twardoch:
+
+ * Renamed project to 'mkdocs-combine'
+ * Added more commandline options to mkdocscombine tool
+
 0.2.6.3:
 
  * Added support for pages without titles specified in mkdocs.yml

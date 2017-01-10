@@ -1,57 +1,92 @@
 #!/usr/bin/env/python
 
-from setuptools import setup, find_packages
-from codecs import open
 from os import path
+
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
 long_description = (
-    "mkdocs_pandoc is a library of preprocessors that convert mkdocs style markdown "
-    "(multiple files, with the document structure defined in the mkdocs "
-    "configuration file mkdocs.yml) into a single markdown document digestible by "
-    "pandoc. It ships with the command line frontend tool mkdocs2pandoc as its primary " 
-    "user interface."
-    )
+    "mkdocs_combine is a library that combines a MkDocs-style Markdown site "
+    "(multiple files, with the document structure defined in the MkDocs "
+    "configuration file mkdocs.yml) into a single Markdown document. "
+    "The resulting document can be processed by pandoc or other Markdown tools."
+    "The command line frontend tool mkdocscombine is the primary user interface."
+    "Derived from https://github.com/jgrassler/mkdocs-pandoc/"
+)
 
 setup(
-    name='mkdocs-pandoc',
+    name='mkdocs-combine',
 
-    version='0.2.6.3',
+    # Versions should comply with PEP440.  For a discussion on single-sourcing
+    # the version across setup.py and the project code, see
+    # https://packaging.python.org/en/latest/single_source_version.html
+    version='0.3.0.0',
 
-    description='A translator from mkdocs style markdown to pandoc style '
-                + 'markdown',
+    description='Combines a MkDocs Markdown site into a single Markdown file',
 
     long_description=long_description,
 
-    url='https://github.com/jgrassler/mkdocs-pandoc',
+    # The project's main homepage.
+    url='https://github.com/twardoch/mkdocs-combine/',
+    download_url='https://github.com/twardoch/mkdocs-combine/archive/master.zip',
+
+    # Author details
     author='Johannes Grassler',
     author_email='johannes@btw23.de',
+    maintainer='Adam Twardoch',
+    maintainer_email='adam+github@twardoch.com',
+
+    # Choose your license
     license='Apache',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
+        'Environment :: MacOS X',
+        "Environment :: Console",
+        'Operating System :: MacOS :: MacOS X',
+        # How mature is this project? Common values are
+        #   3 - Alpha
+        #   4 - Beta
+        #   5 - Production/Stable
         'Development Status :: 3 - Alpha',
+        # Indicate who your project is intended for
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'Intended Audience :: System Administrators',
         'Topic :: Documentation',
         'Topic :: Text Processing',
+        'Topic :: Text Processing :: Filters',
+        'Topic :: Text Processing :: Markup',
+        'Topic :: Text Processing :: Markup :: HTML',
+        'Topic :: Software Development :: Documentation',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Natural Language :: English',
+        # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: Apache Software License',
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 2.7',
     ],
 
-    keywords='mkdoc markdown pandoc',
+    # What does your project relate to?
+    keywords='mkdocs markdown pandoc',
+    # You can just specify the packages manually here if your project is
+    # simple. Or you can use find_packages().
     packages=find_packages(),
 
-    install_requires=['mkdocs>=0.14.0',
-            'markdown-include>=0.5.1'
-            ],
+    # List run-time dependencies here.  These will be installed by pip when
+    # your project is installed. For an analysis of "install_requires" vs pip's
+    # requirements files see:
+    # https://packaging.python.org/en/latest/requirements.html
+    install_requires=['mkdocs>=0.16.1',
+                      'markdown-include>=0.5.1'
+                      ],
 
     entry_points={
         'console_scripts': [
-            'mkdocs2pandoc=mkdocs_pandoc.cli.mkdocs2pandoc:main',
+            'mkdocscombine=mkdocs_combine.cli.mkdocscombine:main',
         ],
     },
 )
