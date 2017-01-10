@@ -155,7 +155,7 @@ def main():
         except IOError as e:
             print("Couldn't open %s for writing: %s" % (args.outfile, e.strerror), file=sys.stderr)
     if combined_md_file:
-        combined_md_file.write(u'\n'.join(mkdocs_combiner.combined_md_lines))
+        combined_md_file.write('\n'.join(mkdocs_combiner.combined_md_lines))
         combined_md_file.close()
 
     html_file = None
