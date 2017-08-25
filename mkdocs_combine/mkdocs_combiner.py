@@ -49,6 +49,7 @@ class MkDocsCombiner:
         self.convert_math = kwargs.get('convert_math', True)
         self.width = kwargs.get('width', 100)
         self.add_chapter_heads = kwargs.get('add_chapter_heads', True)
+        self.add_page_break = kwargs.get('add_page_break', False)
         self.increase_heads = kwargs.get('increase_heads', True)
         self.combined_md_lines = []
         self.html_bare = u''
@@ -192,6 +193,9 @@ class MkDocsCombiner:
             # Add an empty line between pages to prevent text from a previous
             # file from butting up against headers in a subsequent file.
             lines.append('')
+            if self.add_page_break:
+                lines.append('\\newpage')
+                lines.append('')
 
         # Strip anchor tags
         if self.strip_anchors:
