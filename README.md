@@ -85,6 +85,8 @@ structure:
   -C, --no-titles       do not add titles to Markdown files
   -u, --up-levels       increase ATX header levels in Markdown files (default)
   -k, --keep-levels     do not increase ATX header levels in Markdown files
+  -B, --no-page-break   do not add page break between pages (default)
+  -b, --page-break      add page break between pages
 
 tables:
   -t, --tables          keep original Markdown tables (default)

@@ -83,6 +83,13 @@ def parse_args():
                                      help='do not increase ATX header levels in Markdown files')
     args.set_defaults(increase_heads=True)
 
+    args_add_page_break = args_struct.add_mutually_exclusive_group(required=False)
+    args_add_page_break.add_argument('-B', '--no-page-break', dest='add_page_break', action='store_false',
+                                     help='do not add page break between pages (default)')
+    args_add_page_break.add_argument('-b', '--page-break', dest='add_page_break', action='store_true',
+                                     help='add page break between pages')
+    args.set_defaults(add_page_break=False)
+
     args_tables = args.add_argument_group('tables')
     args_filter_tables = args_tables.add_mutually_exclusive_group(required=False)
     args_filter_tables.add_argument('-t', '--tables', dest='filter_tables', action='store_false',
@@ -140,6 +147,7 @@ def main():
             convert_math=args.convert_math,
             add_chapter_heads=args.add_chapter_heads,
             increase_heads=args.increase_heads,
+            add_page_break=args.add_page_break,
         )
     except FatalError as e:
         print(e.message, file=sys.stderr)
