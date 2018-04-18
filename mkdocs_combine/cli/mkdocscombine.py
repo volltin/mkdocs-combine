@@ -147,7 +147,7 @@ def main():
             convert_math=args.convert_math,
             add_chapter_heads=args.add_chapter_heads,
             increase_heads=args.increase_heads,
-            add_page_break=args.add_page_break,
+            add_page_break=args.add_page_break
         )
     except FatalError as e:
         print(e.message, file=sys.stderr)
