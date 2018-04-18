@@ -126,6 +126,8 @@ def parse_args():
 
     args_extras.add_argument('-i', '--image-ext', dest='image_ext', default=None,
                              help="replace image extensions by (default: no replacement)")
+    args_extras.add_argument('-d', '--admonitions-md', dest='convert_admonition_md', action='store_true',
+                             help='convert admonitions to HTML already in the Markdown')
 
     return args.parse_args()
 
@@ -147,7 +149,12 @@ def main():
             convert_math=args.convert_math,
             add_chapter_heads=args.add_chapter_heads,
             increase_heads=args.increase_heads,
+<<<<<<< HEAD
             add_page_break=args.add_page_break
+=======
+            add_page_break=args.add_page_break,
+            convert_admonition_md=args.convert_admonition_md
+>>>>>>> 9025fb89486d088980606f0b7d9ce262741c24ed
         )
     except FatalError as e:
         print(e.message, file=sys.stderr)
