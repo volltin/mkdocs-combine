@@ -31,6 +31,7 @@ import mkdocs_combine.filters.metadata
 import mkdocs_combine.filters.tables
 import mkdocs_combine.filters.toc
 import mkdocs_combine.filters.xref
+import mkdocs_combine.filters.admonitions
 from mkdocs_combine.exceptions import FatalError
 
 
@@ -51,6 +52,7 @@ class MkDocsCombiner:
         self.add_chapter_heads = kwargs.get('add_chapter_heads', True)
         self.add_page_break = kwargs.get('add_page_break', False)
         self.increase_heads = kwargs.get('increase_heads', True)
+        self.convert_admonition_md = kwargs.get('convert_admonition_md', False)
         self.combined_md_lines = []
         self.html_bare = u''
         self.html = u''
@@ -209,6 +211,9 @@ class MkDocsCombiner:
         if self.filter_xrefs:
             lines = mkdocs_combine.filters.xref.XrefFilter().run(lines)
 
+        # Convert admonitions already for Markdown output
+        if self.convert_admonition_md:
+            lines = mkdocs_combine.filters.admonitions.AdmonitionFilter().run(lines)
         if self.filter_toc:
             lines = mkdocs_combine.filters.toc.TocFilter().run(lines)
 
