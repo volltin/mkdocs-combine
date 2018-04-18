@@ -18,14 +18,10 @@ long_description = (
 setup(
     name='mkdocs-combine',
 
-<<<<<<< HEAD
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.3.0.2',
-=======
-    version='0.3.1.0',
->>>>>>> 9025fb89486d088980606f0b7d9ce262741c24ed
+    version='0.3.1.1',
 
     description='Combines a MkDocs Markdown site into a single Markdown file',
 

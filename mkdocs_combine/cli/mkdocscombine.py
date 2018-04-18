@@ -26,7 +26,7 @@ import sys
 import mkdocs_combine
 from mkdocs_combine.exceptions import FatalError
 
-__version__ = '0.3.0.0'
+__version__ = '0.3.1.1'
 
 
 def stdout_file(encoding):
@@ -149,12 +149,8 @@ def main():
             convert_math=args.convert_math,
             add_chapter_heads=args.add_chapter_heads,
             increase_heads=args.increase_heads,
-<<<<<<< HEAD
-            add_page_break=args.add_page_break
-=======
             add_page_break=args.add_page_break,
             convert_admonition_md=args.convert_admonition_md
->>>>>>> 9025fb89486d088980606f0b7d9ce262741c24ed
         )
     except FatalError as e:
         print(e.message, file=sys.stderr)
