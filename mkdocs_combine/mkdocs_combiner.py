@@ -99,7 +99,7 @@ class MkDocsCombiner:
         flattened = []
 
         for page in pages:
-            if type(page) in (str, self.encoding, unicode):
+            if type(page) in (str, self.encoding, 'unicode'):
                 flattened.append(
                     {
                         u'file' : page,
